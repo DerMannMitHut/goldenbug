@@ -53,11 +53,11 @@ void resize(){
     free( oldbugdirs );
 }
 
-inline int hasBug( int i ){
+inline bugdirtype hasBug( int i ){
     return bugdirs[i] & 0x10;
 }
 
-inline int getDir( int i ){
+inline bugdirtype getDir( int i ){
     return bugdirs[i] & 0x03;
 }
 
@@ -65,9 +65,9 @@ inline void setBug( int i ){
     bugdirs[i] |= 0x10;
 }
 
-inline int stepDir( int i ){
-    int oldbugdirs = bugdirs[i];
-    int newDir = (oldbugdirs+1) & 0x03;
+inline bugdirtype stepDir( int i ){
+    bugdirtype oldbugdirs = bugdirs[i];
+    bugdirtype newDir = (oldbugdirs+1) & 0x03;
     bugdirs[i] = (newDir) | (oldbugdirs & 0x10 );
 
     return newDir;

@@ -1,7 +1,7 @@
 goldenbug
 =========
 
-A small c programm, which creates a "golden bug" image, as described in "Spektrum der Wissenschaft, 9/2012, p. 49.
+A small c programm, which creates a "golden bug" image, as described in Spektrum der Wissenschaft, 9/2012, p. 49.
 
 > Die "Goldbug-Variationen" führen vor, wie aus einer einfachen Regel eine überraschend komplexe Struktur entstehen kann.
 > Denken Sie sich ein feines Quadratgitter in der Ebene; zu jedem Quadrat gehört ein winziger Wegweiser, wobei anfangs
