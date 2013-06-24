@@ -27,7 +27,7 @@ inline int idx( int x, int y ){
     return IDX_S_LL(x,y,size,linelength);
 }
 
-// initialize
+// initialize with given size: allowed range for x and y is -size .. +size
 void init( int newsize ){
     size = newsize;
     linelength = 2*size+1;
@@ -38,6 +38,7 @@ void init( int newsize ){
     memset(bugdirs, 0, bytes);
 }
 
+// initialize with doubled size (plus 1) and copy old data into new
 void resize(){
     bugdirtype* oldbugdirs = bugdirs;
     int olds = size;
@@ -53,18 +54,22 @@ void resize(){
     free( oldbugdirs );
 }
 
+// is there a bug already at given position?
 inline bugdirtype hasBug( int i ){
     return bugdirs[i] & 0x10;
 }
 
+// what is the current direction at given position?
 inline bugdirtype getDir( int i ){
     return bugdirs[i] & 0x03;
 }
 
+// sets a bug to the given position
 inline void setBug( int i ){
     bugdirs[i] |= 0x10;
 }
 
+// turn the direction by 90° and returns the new value
 inline bugdirtype stepDir( int i ){
     bugdirtype oldbugdirs = bugdirs[i];
     bugdirtype newDir = (oldbugdirs+1) & 0x03;
@@ -75,15 +80,14 @@ inline bugdirtype stepDir( int i ){
 
 // ============================== algo
 
+// the run of one bug (includes interpretation of directions)
 void letTheNextBugRun(){
     int x = 0;
     int y = 0;
     int i = idx(x,y);
 
     while( hasBug(i) ){
-	int nextD = stepDir(i);
-
-	switch( nextD ){
+	switch( stepDir(i) ){
 	    case 0:
 		x += 1;
 		break;
@@ -107,6 +111,7 @@ void letTheNextBugRun(){
     lastBugY = y;
 }
 
+// output the current image in netpbm format P2 (see http://en.wikipedia.org/wiki/Netpbm_format)
 void printDirections(){
     printf( "P2\n%d %d\n4\n", maxX-minX+1, maxY-minY+1 );
     for( int y=minY ; y<=maxY ; ++y ){
@@ -124,6 +129,9 @@ void printDirections(){
     printf( "\n" );
 }
 
+// start given number of bugs (one after another)
+//  * displays progress on per-mille-basis
+//  * resizes field if bugs reach the edge of the field
 void startRuns( int maxNumberOfBugs ){
     int numberOfBugs = 0;
 
@@ -167,7 +175,7 @@ void startRuns( int maxNumberOfBugs ){
     }
 }
 
-// ============================== TESTS
+// ============================== UNIT TESTS
 
 int fail(char* errormsg, int retval){
     fprintf( stderr, "<%i> fail: %s\n", retval, errormsg );
@@ -310,6 +318,10 @@ int test(){
 
 // ============================== main
 
+// usage: ./goldenbug [<number of bugs>]
+//
+// if <number of bugs> is less than 1 (or not given at all): start the unit tests
+// if <number of bugs> is 1 or greater: start the given number of bugs
 int main( int argc, char** argv ){
     int maxNumberOfBugs = 0;
     if( argc>1 ){
